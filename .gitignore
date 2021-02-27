@@ -102,3 +102,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+android
+ios
+node_modules
+alquiler/android
+alquiler/ios
+alquiler/node_modules
+alquiler/__tests__

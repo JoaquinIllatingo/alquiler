@@ -1,6 +1,8 @@
 import React, { useState} from 'react';
 import { Text, StyleSheet, View, TextInput, Button,TouchableHighlight, Alert, ScrollView } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DatePicker from 'react-native-datepicker'
+
 
 const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
 
@@ -10,7 +12,7 @@ const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
         const [apellidoMaterno, guardarApellidoMaterno] = useState('');
         const [celular, guardarCelular] = useState('');
         const [dni, guardarDni] = useState('');
-        const [fechaIngreso, guardarFechaIngreso] = useState('');
+        const [fechaIngreso, guardarFechaIngreso] = useState(new Date());
         const [propiedad, guardarPropiedad] = useState('');
         const [habitacion, guardarHabitacion] = useState('');
         const [montoAlquiler, guardarMontoAlquiler] = useState('');
@@ -21,6 +23,22 @@ const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
 
         const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
         const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+
+/*
+        const getCurrentDate=()=>{
+
+          var date = new Date().getDate();
+          var month = new Date().getMonth() + 1;
+          var year = new Date().getFullYear();
+    
+          //Alert.alert(date + '-' + month + '-' + year);
+          // You can turn it in to your desired format
+          return year + '-' + month + '-' + date;//format: dd-mm-yyyy;
+        }
+*/
+
+        //this.state = {date:"2016-05-15"};
+        //this.state = {date: getCurrentDate()};
 
         const showDatePicker = () => {
           setDatePickerVisibility(true);
@@ -137,24 +155,29 @@ const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
 
             <View>
                 <Text style={styles.label}>Fecha de Ingreso:</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText= {(texto) => guardarDni(texto)}
+                <DatePicker
+                  style={{width: 200}}
+                  date={fechaIngreso}
+                  mode="date"
+                  placeholder="select date"
+                  format="YYYY-MM-DD"
+                
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  customStyles={{
+                    dateIcon: {
+                      position: 'absolute',
+                      left: 0,
+                      top: 4,
+                      marginLeft: 0
+                    },
+                    dateInput: {
+                      marginLeft: 36
+                    }
+                    // ... You can check the source to find the other keys.
+                  }}
+                  onDateChange={(date) => {guardarFechaIngreso(date)}}
                 />
-            </View>
-            <View>
-              <Button title="Fecha de Ingreso" onPress={showDatePicker} />
-              <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="date"
-                onConfirm={confirmarFecha}
-                onCancel={hideDatePicker}
-                locale='es_Es'
-                headerTextIOS="Elige una fecha"
-                cancelTextIOS="Cancelar"
-                confirmTextIOS="Confirmar"
-              />
-              <Text>{fecha}</Text>
             </View>
 
             <View>
@@ -206,13 +229,14 @@ const styles = StyleSheet.create({
     },
     label:{
         fontWeight:"bold",
-        fontSize: 11,
+        fontSize: 18,
         marginTop: 20
     },
     input: {
         marginTop: 10,
         height: 50,
         borderColor: '#e1e1e1',
+        backgroundColor: '#e1e1e1',
         borderStyle: 'solid'
     },
     btnSubmit: {

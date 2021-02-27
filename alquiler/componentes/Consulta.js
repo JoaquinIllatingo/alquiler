@@ -10,44 +10,78 @@ const Consulta = () => {
 
 
     return (
-        <View style={styles.inquilino}>
-            <View>
+        <>
+        <View style={styles.fila}>
+            <View style={styles.celda}>
+                <Text style={styles.texto}>101</Text>
+            </View>
+            <View style={styles.celda}>
                 <Text style={styles.texto}>Juan</Text>
             </View>
-            <View>
+            <View style={styles.celda}>
                 <Text style={styles.texto}>Perez</Text>
             </View>
-            <View>
+            <View style={styles.celda}>
                 <Text style={styles.texto}>24/05/2021</Text>
             </View>
-
-            <View>
+            <View style={styles.celda}>
                 <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
-                    <Text style={styles.textoEliminar}> P </Text>
+                    <Text style={styles.textoEliminar}> PAGAR </Text>
+                </TouchableHighlight>
+            </View >
+            <View style={styles.celda}>
+                <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
+                    <Text style={styles.textoEliminar}> ELIMINAR </Text>
                 </TouchableHighlight>
             </View>
-
-            <View>
-                <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
-                    <Text style={styles.textoEliminar}> - </Text>
-                </TouchableHighlight>
-            </View>
-            
         </View>
 
+        <View style={styles.fila}>
+            <View style={styles.celda}>
+                <Text style={styles.texto}>102</Text>
+            </View>
+            <View style={styles.celda}>
+                <Text style={styles.texto}>Juan</Text>
+            </View>
+            <View style={styles.celda}>
+                <Text style={styles.texto}>Perez</Text>
+            </View>
+            <View style={styles.celda}>
+                <Text style={styles.texto}>24/05/2021</Text>
+            </View>
+            <View style={styles.celda}>
+                <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
+                    <Text style={styles.textoEliminar}> PAGAR </Text>
+                </TouchableHighlight>
+            </View >
+            <View style={styles.celda}>
+                <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
+                    <Text style={styles.textoEliminar}> ELIMINAR </Text>
+                </TouchableHighlight>
+            </View>
+        </View>
+
+        
+        </>
 
     )
 }
 
 const styles = StyleSheet.create({
-    inquilino: {
+    fila: {
         flexDirection: 'row',
         backgroundColor: '#FFF',
         borderBottomColor: '#e1e1e1',
         borderStyle: 'solid',
         borderBottomWidth: 1,
-        paddingVertical: 20,
+        paddingVertical: 10,
         paddingHorizontal: 10
+    },
+
+    celda:{
+        borderStyle: 'solid',
+        marginLeft: 10,
+        textAlign: 'center'
     },
     label: {
         fontWeight: 'bold',
@@ -56,6 +90,7 @@ const styles = StyleSheet.create({
     },
     texto: {
         fontSize: 18,
+        textAlign: 'center'
     },
     btnEliminar: {
         padding: 10,

@@ -1,65 +1,60 @@
-import React from 'react';
-import { Text, StyleSheet, View, TouchableHighlight } from 'react-native';
+import React, { useState,useEffect}  from 'react';
+import { Text, StyleSheet, View, TouchableHighlight, FlatList } from 'react-native';
+import axios from 'axios';
+import ItemInquilino from './ItemInquilino';
 
 const Consulta = () => {
+
+    const [consultarAPI, guardarConsultarAPI] = useState(true);
+
+    const[inquilinos, guardarInquilinos]= useState([]);
 
     const dialogoEliminar = id => {
         console.log('eliminando....', id);
     }
 
+    useEffect(() => {
+        const cotizarCriptomoneda = async () => {
+          if(consultarAPI){
+            console.log('consultando libros');
+            //const url = `https://www.json-generator.com/api/json/get/ccLAsEcOSq?indent=1`;
+            //const url = `http://localhost:9091/consulta/inquilino?idPropiedad=1`;
+            const url ='https://kaela2505.herokuapp.com/consulta/inquilinoDemo?idPropiedad=1';
+            console.log(url);
+            const resultado = await axios.get(url);
+
+           console.log(resultado);
+           guardarInquilinos(resultado.data);
 
 
+
+            console.log('consultando inquilinos');
+              const url2 = `http://localhost:9091/consulta/inquilino?idPropiedad=1`;
+              console.log(url2);
+              const resultado2 = await axios.get(url2);
+  
+             console.log(resultado2);
+    
+          }
+        }
+
+      
+        cotizarCriptomoneda();
+        
+      }, []);
+
+
+    
     return (
         <>
-        <View style={styles.fila}>
-            <View style={styles.celda}>
-                <Text style={styles.texto}>101</Text>
-            </View>
-            <View style={styles.celda}>
-                <Text style={styles.texto}>Juan</Text>
-            </View>
-            <View style={styles.celda}>
-                <Text style={styles.texto}>Perez</Text>
-            </View>
-            <View style={styles.celda}>
-                <Text style={styles.texto}>24/05/2021</Text>
-            </View>
-            <View style={styles.celda}>
-                <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
-                    <Text style={styles.textoEliminar}> PAGAR </Text>
-                </TouchableHighlight>
-            </View >
-            <View style={styles.celda}>
-                <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
-                    <Text style={styles.textoEliminar}> ELIMINAR </Text>
-                </TouchableHighlight>
-            </View>
-        </View>
-
-        <View style={styles.fila}>
-            <View style={styles.celda}>
-                <Text style={styles.texto}>102</Text>
-            </View>
-            <View style={styles.celda}>
-                <Text style={styles.texto}>Juan</Text>
-            </View>
-            <View style={styles.celda}>
-                <Text style={styles.texto}>Perez</Text>
-            </View>
-            <View style={styles.celda}>
-                <Text style={styles.texto}>24/05/2021</Text>
-            </View>
-            <View style={styles.celda}>
-                <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
-                    <Text style={styles.textoEliminar}> PAGAR </Text>
-                </TouchableHighlight>
-            </View >
-            <View style={styles.celda}>
-                <TouchableHighlight onPress={ () => dialogoEliminar(1) } style={styles.btnEliminar}>
-                    <Text style={styles.textoEliminar}> ELIMINAR </Text>
-                </TouchableHighlight>
-            </View>
-        </View>
+      
+        <FlatList
+              style={styles.listado}
+              data={inquilinos}
+              renderItem= {({item}) => <ItemInquilino item = {item} />}
+              keyExtractor={ inquilinos => inquilinos.idInquilino}
+            />
+       
 
         
         </>

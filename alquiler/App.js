@@ -87,7 +87,6 @@ const App = () => {
 
           {mostrarConsulta?(
             <>
-            <Text style= {styles.titulo}>Listado Inquilinos</Text>
             <Consulta />
               
             </>

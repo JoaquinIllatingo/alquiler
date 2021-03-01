@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View, TouchableHighlight } from 'react-native';
+import { Text, StyleSheet, View, TouchableHighlight, Image } from 'react-native';
 
 const ItemInquilino = ({item }) => {
 
@@ -17,15 +17,22 @@ const ItemInquilino = ({item }) => {
             <View>
                 <Text style={styles.colNombre, styles.colNombre}>{item.nombrePersona}</Text>
             </View>
-            <View>
-                <Text style={styles.colApellidoPaterno}>{item.apellidoPaterno}</Text>
-            </View>
+         
             <View>
                 <Text style={styles.colFecha}>2021-03-15</Text>
             </View>
             <View>
-                <TouchableHighlight onPress={ () => dialogoEliminar(item.idInquilino) } style={styles.colBtnDesocupar}>
-                    <Text style={styles.textoEliminar}> Eliminar &times; </Text>
+                <TouchableHighlight  onPress={ () => dialogoEliminar(item.idInquilino) } style={styles.colBtnDesocupar}>
+                    <Image style={styles.imagestyle} 
+                    source={require('../assets/img/pagar.jpg')}
+                    />
+                </TouchableHighlight>
+            </View>
+            <View>
+                <TouchableHighlight  onPress={ () => dialogoEliminar(item.idInquilino) } style={styles.colBtnDesocupar}>
+                    <Image style={styles.imagestyle} 
+                    source={require('../assets/img/eliminar.jpg')}
+                    />
                 </TouchableHighlight>
             </View>
         </View>
@@ -46,6 +53,10 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         flex: 1
 
+    },
+    imagestyle:{
+        width:25,
+        height:30,
     },
     celda: {
         fontWeight: 'bold',
@@ -78,10 +89,9 @@ const styles = StyleSheet.create({
     },
     colBtnDesocupar: {
         fontWeight: 'bold',
-        width:100,
+        width:30,
         fontSize: 17,
-        marginLeft:10,
-        backgroundColor: 'red',
+        marginLeft:40,
     },
     texto: {
         fontSize: 18,

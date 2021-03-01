@@ -108,7 +108,7 @@ const App = () => {
 const styles = StyleSheet.create({
 
   contenedor: {
-    backgroundColor: '#AA076B',
+    backgroundColor: '#CFF9F9',
     flex: 1
   },
 
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
 
   titulo: {
-    color: '#FFF',
+    color: '#121212',
     marginTop: Platform.OS==='ios'? 40 : 20,
     marginBottom: 20,
     fontSize:24,

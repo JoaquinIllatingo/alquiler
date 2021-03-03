@@ -5,7 +5,7 @@ import DatePicker from 'react-native-datepicker';
 import {Picker} from '@react-native-community/picker';
 
 
-const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar}) => {
+const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar,guardarConsultarAPI,dataRegistro, guardarDataRegistro}) => {
 
 
         const [nombre, guardarNombre] = useState('');
@@ -59,6 +59,8 @@ const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar}) => 
           hideTimePicker();
         };
 
+
+
         const guardarInquilino = () => {
           console.log("GuardarInquilino");
 
@@ -72,9 +74,22 @@ const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar}) => 
 
             //Ocultar formulario
             guardarTextoGuardando("guardando");
+            guardarDataRegistro(
+              {nombre: nombre,
+                apellidoPaterno: apellidoPaterno,
+                apellidoMaterno: apellidoMaterno,
+                tipoDocumento: "1",
+                numeroDocumento: dni,
+                trabajo: "abc",
+                observacion: "abc",
+                fechaIngreso: "2012-01-01",
+                habitacion: 1              
+              })
             //guardarMostrarForm(false);
             guardarEventoGuardar(true);
             setCuenta(2);
+            guardarConsultarAPI(true);
+            
             
 
            //registrarInquilino();
@@ -143,44 +158,7 @@ const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar}) => 
               });
         }
 */
-        useEffect(() => {
-          // POST request using fetch inside useEffect React hook
-          const consultarAPI = async () => {
-            console.log("consultarAPI");
-            const requestOptions = {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ 
-                nombre: nombre,
-                apellidoPaterno: "Illatingo",
-                apellidoMaterno: "Reynoso",
-                tipoDocumento: "1",
-                numeroDocumento: "70434083",
-                trabajo: "abc",
-                observacion: "abc",
-                fechaIngreso: "2012-01-01",
-                habitacion: 1
-              })
-            };
-
-            console.log("eventoGuardar");
-            console.log(eventoGuardar);
-
-            if(eventoGuardar){
-              console.log("consultando")
-              fetch('https://kaela2505.herokuapp.com/registro', requestOptions)
-                .then(response => response.json())
-                .then(data => console.log(response));
-
-            }else{
-              console.log("else")
-            }
-        }
-        consultarAPI();
-
-      
-      // empty dependency array means this effect will only run once (like componentDidMount in classes)
-      }, [textoGuardando]);
+        
 
     return (
         <>

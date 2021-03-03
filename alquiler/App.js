@@ -1,6 +1,6 @@
 
 
-import React, { useState} from 'react';
+import React, { useState,useEffect} from 'react';
 import { Text, StyleSheet, View, FlatList, TouchableHighlight, TouchableWithoutFeedback, Keyboard, Platform, Touchable } from 'react-native';
 import Cita from './componentes/Cita';
 import Formulario from './componentes/Formulario';
@@ -15,12 +15,62 @@ const App = () => {
 
   const [eventoGuardar, guardarEventoGuardar] = useState(false);
 
+  const [consultarAPI, guardarConsultarAPI] = useState(false);
+
+  const[dataRegistro, guardarDataRegistro] = useState({});
+
   const[citas, setCitas] = useState([
     {id: "1", paciente:"Hook", propietario: 'Juan', sintomas: "No Come"},
     {id: "2", paciente:"Redux", propietario: 'Itzel', sintomas: "No Duerme"},
     {id: "3", paciente:"Native", propietario: 'Josue', sintomas: "No Canta"}
   ]);
 
+
+  useEffect(() => {
+    // POST request using fetch inside useEffect React hook
+    const consultarAPIRegistro = async () => {
+      console.log("consultarAPIRegistro");
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataRegistro)
+      };
+
+      if(consultarAPI){
+        console.log("registrando");
+        console.log(dataRegistro);
+        fetch('https://kaela2505.herokuapp.com/registroe', requestOptions)
+          //.then(response => response.json())
+          //.then(data => console.log(response))
+          .then(
+            response => {
+              console.log(response);
+
+              const data = response.json();
+
+              // check for error response
+              if (!response.ok) {
+                  // get error message from body or default to response status
+                  const error = (data && data.message) || response.status;
+                  return Promise.reject(error);
+              }
+
+            }
+          )
+          .catch(error => {
+            //this.setState({ errorMessage: error.toString() });
+            console.log('There was an error!', error);
+          });
+
+      }else{
+        console.log("else")
+      }
+  }
+  consultarAPIRegistro();
+
+
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+}, [consultarAPI]);
 
 
 
@@ -78,6 +128,9 @@ const App = () => {
               guardarMostrarForm={guardarMostrarForm}
               eventoGuardar={eventoGuardar}
               guardarEventoGuardar={guardarEventoGuardar}
+              guardarConsultarAPI = {guardarConsultarAPI}
+              dataRegistro = {dataRegistro}
+              guardarDataRegistro = {guardarDataRegistro}
               
             />
               

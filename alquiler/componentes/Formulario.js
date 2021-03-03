@@ -1,11 +1,11 @@
-import React, { useState} from 'react';
+import React, { useState,useEffect} from 'react';
 import { Text, StyleSheet, View, TextInput, Button,TouchableHighlight, Alert, ScrollView } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DatePicker from 'react-native-datepicker';
 import {Picker} from '@react-native-community/picker';
 
 
-const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
+const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar}) => {
 
 
         const [nombre, guardarNombre] = useState('');
@@ -18,6 +18,8 @@ const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
         const [habitacion, guardarHabitacion] = useState('');
         const [montoAlquiler, guardarMontoAlquiler] = useState('');
 
+
+
         const [fecha, guardarFecha] = useState('');
         const [hora, guardarHora] = useState('');
         const [sintomas, guardarSintomas] = useState('');
@@ -25,21 +27,8 @@ const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
         const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
         const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
-/*
-        const getCurrentDate=()=>{
-
-          var date = new Date().getDate();
-          var month = new Date().getMonth() + 1;
-          var year = new Date().getFullYear();
-    
-          //Alert.alert(date + '-' + month + '-' + year);
-          // You can turn it in to your desired format
-          return year + '-' + month + '-' + date;//format: dd-mm-yyyy;
-        }
-*/
-
-        //this.state = {date:"2016-05-15"};
-        //this.state = {date: getCurrentDate()};
+        const [textoGuardando, guardarTextoGuardando] = useState(' ');
+        const [cuenta, setCuenta] = useState(0);
 
         const showDatePicker = () => {
           setDatePickerVisibility(true);
@@ -70,28 +59,25 @@ const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
           hideTimePicker();
         };
 
-        const crearNuevaCita = () => {
-          console.log("Desde crearNuevaCita")
+        const guardarInquilino = () => {
+          console.log("GuardarInquilino");
 
-          if(paciente.trim() ==='' || 
-            propietario.trim() ==='' || 
-            telefono.trim() ==='' || 
-            fecha.trim() ==='' || 
-            hora.trim() ==='' || 
-            sintomas.trim() ==='' )
-            {
-              mostrarAlerta();
-              return;
+          if(nombre.trim() === ''){
+            console.log("nombre vacio");
+            return;
+          }
+          console.log('nombre:'+nombre);
 
-            }
-
-            const cita ={paciente,propietario,telefono,fecha,hora,sintomas}
-
-            const citasNuevo =[...citas,cita];
-            setCitas(citasNuevo);
+          
 
             //Ocultar formulario
-            guardarMostrarForm(false);
+            guardarTextoGuardando("guardando");
+            //guardarMostrarForm(false);
+            guardarEventoGuardar(true);
+            setCuenta(2);
+            
+
+           //registrarInquilino();
 
             //Resetear Formulario
 
@@ -114,6 +100,87 @@ const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
           guardarPropiedad(propiedad);
           console.log(propiedad);
         }
+
+/*
+        const registrarInquilino = () => {
+          console.log(registrarInquilino);
+          // POST request using fetch with error handling
+          const requestOptions = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                nombre: nombre,
+                apellidoPaterno: "Illatingo",
+                apellidoMaterno: "Reynoso",
+                tipoDocumento: "1",
+                numeroDocumento: "70434083",
+                trabajo: "abc",
+                observacion: "abc",
+                fechaIngreso: "2012-01-01",
+                habitacion: 1
+             })
+          };
+
+          fetch('https://kaela2505.herokuapp.com/registro', requestOptions)
+              .then(async response => {
+                  const data = await response.json();
+      
+                  console.log("data");
+                  console.log(data);
+                  // check for error response
+                  if (!response.ok) {
+                      // get error message from body or default to response status
+                      const error = (data && data.message) || response.status;
+                      //return Promise.reject(error);
+                      console.log(error);
+                  }
+                  
+      
+                  console.log('There was an error!');
+              })
+              .catch(error => {
+                  console.log('There was an error!', error);
+              });
+        }
+*/
+        useEffect(() => {
+          // POST request using fetch inside useEffect React hook
+          const consultarAPI = async () => {
+            console.log("consultarAPI");
+            const requestOptions = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                nombre: nombre,
+                apellidoPaterno: "Illatingo",
+                apellidoMaterno: "Reynoso",
+                tipoDocumento: "1",
+                numeroDocumento: "70434083",
+                trabajo: "abc",
+                observacion: "abc",
+                fechaIngreso: "2012-01-01",
+                habitacion: 1
+              })
+            };
+
+            console.log("eventoGuardar");
+            console.log(eventoGuardar);
+
+            if(eventoGuardar){
+              console.log("consultando")
+              fetch('https://kaela2505.herokuapp.com/registro', requestOptions)
+                .then(response => response.json())
+                .then(data => console.log(response));
+
+            }else{
+              console.log("else")
+            }
+        }
+        consultarAPI();
+
+      
+      // empty dependency array means this effect will only run once (like componentDidMount in classes)
+      }, [textoGuardando]);
 
     return (
         <>
@@ -224,9 +291,12 @@ const Formulario = ({citas,setCitas,guardarMostrarForm}) => {
 
         
             <View>
-                <TouchableHighlight onPress={ () => crearNuevaCita() } style={styles.btnSubmit}>
+                <TouchableHighlight onPress={ () => guardarInquilino() } style={styles.btnSubmit}>
                     <Text style={styles.textoSubmit}>Guardar</Text>
                 </TouchableHighlight>
+            </View>
+            <View style={{height:30}}>
+              <Text>{textoGuardando}</Text>
             </View>
         </ScrollView>
         </>
@@ -240,7 +310,9 @@ const styles = StyleSheet.create({
         backgroundColor:'#FFF',
         paddingHorizontal:20,
         paddingVertical: 10,
-        marginHorizontal: '2.5%'
+        marginHorizontal: '2.5%',
+        marginBottom:40,
+        paddingBottom:30
     },
     label:{
         fontWeight:"bold",
@@ -257,7 +329,8 @@ const styles = StyleSheet.create({
     btnSubmit: {
       padding: 10,
       backgroundColor: '#7d024e',
-      marginVertical: 10
+      marginVertical: 10,
+      marginBottom:20
     },
     textoSubmit: {
         color: '#FFF',

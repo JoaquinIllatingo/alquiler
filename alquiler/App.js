@@ -13,6 +13,8 @@ const App = () => {
   const[mostrarConsulta, guardarMostrarConsulta] = useState(false);
   const[mostrarFormPago, guardarMostrarFormPago] = useState(false);
 
+  const [eventoGuardar, guardarEventoGuardar] = useState(false);
+
   const[citas, setCitas] = useState([
     {id: "1", paciente:"Hook", propietario: 'Juan', sintomas: "No Come"},
     {id: "2", paciente:"Redux", propietario: 'Itzel', sintomas: "No Duerme"},
@@ -73,9 +75,10 @@ const App = () => {
             <>
             <Text style= {styles.titulo}>Nuevo Inquilino</Text>
             <Formulario 
-              citas={citas}
-              setCitas={setCitas}
               guardarMostrarForm={guardarMostrarForm}
+              eventoGuardar={eventoGuardar}
+              guardarEventoGuardar={guardarEventoGuardar}
+              
             />
               
             </>

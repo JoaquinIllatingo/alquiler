@@ -5,10 +5,11 @@ import { Text, StyleSheet, View, FlatList, TouchableHighlight, TouchableWithoutF
 import Cita from './componentes/Cita';
 import Formulario from './componentes/Formulario';
 import Consulta from './componentes/Consulta';
+import Dialog from "react-native-dialog";
+
 
 const App = () => {
 
-  //definir el state de citas
   const[mostrarForm, guardarMostrarForm] = useState(false);
   const[mostrarConsulta, guardarMostrarConsulta] = useState(false);
   const[mostrarFormPago, guardarMostrarFormPago] = useState(false);
@@ -19,11 +20,11 @@ const App = () => {
 
   const[dataRegistro, guardarDataRegistro] = useState({});
 
-  const[citas, setCitas] = useState([
-    {id: "1", paciente:"Hook", propietario: 'Juan', sintomas: "No Come"},
-    {id: "2", paciente:"Redux", propietario: 'Itzel', sintomas: "No Duerme"},
-    {id: "3", paciente:"Native", propietario: 'Josue', sintomas: "No Canta"}
-  ]);
+
+
+  //DIALOGS
+  const [visibleDialogRegistro, setVisibleDialogRegistro] = useState(false);
+  const [visibleDialogError, setVisibleDialogError] = useState(false);
 
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const App = () => {
       if(consultarAPI){
         console.log("registrando");
         console.log(dataRegistro);
-        fetch('https://kaela2505.herokuapp.com/registroe', requestOptions)
+        fetch('https://kaela2505.herokuapp.com/registro', requestOptions)
           //.then(response => response.json())
           //.then(data => console.log(response))
           .then(
@@ -54,6 +55,9 @@ const App = () => {
                   const error = (data && data.message) || response.status;
                   return Promise.reject(error);
               }
+
+              console.log("Registro OK");
+              setVisibleDialogRegistro(true);
 
             }
           )
@@ -72,14 +76,6 @@ const App = () => {
 // empty dependency array means this effect will only run once (like componentDidMount in classes)
 }, [consultarAPI]);
 
-
-
-  const eliminarPaciente = id => {
-    setCitas( (citasActuales) => {
-      return citasActuales.filter(cita =>cita.id != id)
-
-    })
-  }
 
   const mostrarFormulario = () => {
     guardarMostrarConsulta(false);
@@ -102,6 +98,23 @@ const App = () => {
   const cerrarTeclado = ()=> {
     Keyboard.dismiss();
   }
+
+
+
+
+
+
+  const handleOkDialogRegistro = () => {
+    // The user has pressed the "Delete" button, so here you can do your own logic.
+    // ...Your logic
+    setVisibleDialogRegistro(false);
+  };
+
+  const handleOkDialogError = () => {
+    // The user has pressed the "Delete" button, so here you can do your own logic.
+    // ...Your logic
+    setVisibleDialogError(false);
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => cerrarTeclado()}>
@@ -126,8 +139,6 @@ const App = () => {
             <Text style= {styles.titulo}>Nuevo Inquilino</Text>
             <Formulario 
               guardarMostrarForm={guardarMostrarForm}
-              eventoGuardar={eventoGuardar}
-              guardarEventoGuardar={guardarEventoGuardar}
               guardarConsultarAPI = {guardarConsultarAPI}
               dataRegistro = {dataRegistro}
               guardarDataRegistro = {guardarDataRegistro}
@@ -153,6 +164,29 @@ const App = () => {
           )}
 
 
+        </View>
+
+
+
+
+        <View style={styles.container}>
+          <Dialog.Container visible={visibleDialogRegistro}>
+            <Dialog.Title>Confirmacion</Dialog.Title>
+            <Dialog.Description>
+              REGISTRO EXITOSO
+            </Dialog.Description>
+            <Dialog.Button label="OK" onPress={handleOkDialogRegistro} />
+          </Dialog.Container>
+        </View>
+
+        <View style={styles.container}>
+          <Dialog.Container visible={visibleDialogError}>
+            <Dialog.Title>Error</Dialog.Title>
+            <Dialog.Description>
+              OCURRIO UN ERROR
+            </Dialog.Description>
+            <Dialog.Button label="OK" onPress={handleOkDialogError} />
+          </Dialog.Container>
         </View>
 
       </View>

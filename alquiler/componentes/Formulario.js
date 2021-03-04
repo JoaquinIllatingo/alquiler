@@ -3,9 +3,10 @@ import { Text, StyleSheet, View, TextInput, Button,TouchableHighlight, Alert, Sc
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DatePicker from 'react-native-datepicker';
 import {Picker} from '@react-native-community/picker';
+import axios from 'axios';
 
 
-const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar,guardarConsultarAPI,dataRegistro, guardarDataRegistro}) => {
+const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guardarDataRegistro}) => {
 
 
         const [nombre, guardarNombre] = useState('');
@@ -14,21 +15,90 @@ const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar,guard
         const [celular, guardarCelular] = useState('');
         const [dni, guardarDni] = useState('');
         const [fechaIngreso, guardarFechaIngreso] = useState(new Date());
-        const [propiedad, guardarPropiedad] = useState('');
+        const [propiedad, guardarPropiedad] = useState(1);
         const [habitacion, guardarHabitacion] = useState('');
         const [montoAlquiler, guardarMontoAlquiler] = useState('');
 
 
-
-        const [fecha, guardarFecha] = useState('');
-        const [hora, guardarHora] = useState('');
-        const [sintomas, guardarSintomas] = useState('');
-
         const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
         const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
-        const [textoGuardando, guardarTextoGuardando] = useState(' ');
-        const [cuenta, setCuenta] = useState(0);
+        const [textoGuardando, guardarTextoGuardando] = useState('0');
+
+        const [propiedadSeleccionada, guardarPropiedadSeleccionada] = useState(false);
+
+        const[cargando, guardarCargando] = useState(true);
+        
+
+        const [habitaciones, guardarHabitaciones] = useState(
+          [
+            {id: 1,nombre: "101",libre: true,estado: 1},
+            {id: 2,nombre: "101",libre: true,estado: 1}
+          ]
+        )
+
+      //const [habitaciones, guardarHabitaciones] = useState([]);
+        
+/*
+        useEffect(() => {
+          console.log("buscar habitaciones");
+          const consultarHabitaciones = async () => {
+            const url = `https://kaela2505.herokuapp.com/habitacion?idPropiedad=${propiedad}`;
+            console.log(url);
+            const resultado = await axios.get(url);
+            console.log(resultado);
+            guardarHabitaciones(resultado.data);
+
+            console.log("habitaciones");
+            console.log(habitaciones);
+        }
+        consultarHabitaciones();
+  
+      }, [propiedad]);
+
+      */
+
+
+      
+     /*
+        useEffect(() => {
+          console.log("efe 1");
+          console.log(propiedad);
+          const consultarHabitaciones = () =>{
+            
+            fetch(`https://kaela2505.herokuapp.com/habitacion?idPropiedad=${propiedad}`)
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              guardarHabitaciones(data);
+              console.log("hab");
+              console.log(habitaciones);
+            });
+          }
+        
+        consultarHabitaciones();
+
+      }, [propiedad]);*/
+
+      /*
+      useEffect(() => {
+        const consultarAPI = async () => {
+          
+            const url = `https://kaela2505.herokuapp.com/habitacion?idPropiedad=${propiedad}`;
+            console.log(url);
+            const resultado = await axios.get(url);
+            console.log(resultado);
+            console.log(textoGuardando);
+            guardarTextoGuardando("1");
+            guardarHabitaciones(resultado);
+            console.log(textoGuardando);
+            
+        }
+        consultarAPI();
+
+    }, [textoGuardando]);
+*/
+
 
         const showDatePicker = () => {
           setDatePickerVisibility(true);
@@ -45,35 +115,15 @@ const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar,guard
           hideDatePicker();
         };
 
-        const showTimePicker = () => {
-          setTimePickerVisibility(true);
-        };
-      
-        const hideTimePicker = () => {
-          setTimePickerVisibility(false);
-        };
-
-        const confirmarHora = (hora) => {
-          const opciones = {hour:'numeric', minute:"2-digit"};
-          guardarHora(hora.toLocaleDateString('en-US',opciones));
-          hideTimePicker();
-        };
-
-
-
         const guardarInquilino = () => {
-          console.log("GuardarInquilino");
 
           if(nombre.trim() === ''){
             console.log("nombre vacio");
             return;
           }
-          console.log('nombre:'+nombre);
-
-          
 
             //Ocultar formulario
-            guardarTextoGuardando("guardando");
+            guardarTextoGuardando("2");
             guardarDataRegistro(
               {nombre: nombre,
                 apellidoPaterno: apellidoPaterno,
@@ -82,17 +132,13 @@ const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar,guard
                 numeroDocumento: dni,
                 trabajo: "abc",
                 observacion: "abc",
-                fechaIngreso: "2012-01-01",
-                habitacion: 1              
+                fechaIngreso: fechaIngreso,
+                habitacion: habitacion,
+                montoAlquiler: montoAlquiler              
               })
             //guardarMostrarForm(false);
-            guardarEventoGuardar(true);
-            setCuenta(2);
             guardarConsultarAPI(true);
-            
-            
 
-           //registrarInquilino();
 
             //Resetear Formulario
 
@@ -113,52 +159,28 @@ const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar,guard
 
         const obtenerPropiedad = (propiedad) => {
           guardarPropiedad(propiedad);
+          guardarTextoGuardando("3");
           console.log(propiedad);
+          consultarHabitaciones(propiedad);
+
         }
 
-/*
-        const registrarInquilino = () => {
-          console.log(registrarInquilino);
-          // POST request using fetch with error handling
-          const requestOptions = {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ 
-                nombre: nombre,
-                apellidoPaterno: "Illatingo",
-                apellidoMaterno: "Reynoso",
-                tipoDocumento: "1",
-                numeroDocumento: "70434083",
-                trabajo: "abc",
-                observacion: "abc",
-                fechaIngreso: "2012-01-01",
-                habitacion: 1
-             })
-          };
-
-          fetch('https://kaela2505.herokuapp.com/registro', requestOptions)
-              .then(async response => {
-                  const data = await response.json();
-      
-                  console.log("data");
-                  console.log(data);
-                  // check for error response
-                  if (!response.ok) {
-                      // get error message from body or default to response status
-                      const error = (data && data.message) || response.status;
-                      //return Promise.reject(error);
-                      console.log(error);
-                  }
-                  
-      
-                  console.log('There was an error!');
-              })
-              .catch(error => {
-                  console.log('There was an error!', error);
-              });
+        const consultarHabitaciones = (idPropiedad) =>{
+            
+          fetch(`https://kaela2505.herokuapp.com/habitacion?idPropiedad=${idPropiedad}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            guardarHabitaciones(data);
+            console.log("hab");
+            console.log(habitaciones);
+          });
         }
-*/
-        
+        const obtenerHabitacion = (habit) => {
+          guardarHabitacion(habit);
+          guardarTextoGuardando("4");
+        }
+
 
     return (
         <>
@@ -250,10 +272,20 @@ const Formulario = ({guardarMostrarForm,eventoGuardar,guardarEventoGuardar,guard
 
             <View>
                 <Text style={styles.label}>Habitacion:</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText= {(texto) => guardarDni(texto)}
-                />
+                <Picker 
+                    selectedValue= {habitacion}
+                    onValueChange={habit => obtenerHabitacion(habit)}
+                    itemStyle ={{height:120}}
+                >
+
+                  
+                    <Picker.Item label="--Seleccione--" value= ""/>
+                    {  habitaciones.map( habit => (
+                          <Picker.Item key={habit.id} label={habit.nombre} value= {habit.id}/>                    
+                           ) ) }
+
+                </Picker>
+
             </View>
 
             <View>

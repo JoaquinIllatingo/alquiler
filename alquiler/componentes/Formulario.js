@@ -20,100 +20,14 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
         const [montoAlquiler, guardarMontoAlquiler] = useState('');
 
 
-        const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-        const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
-        const [textoGuardando, guardarTextoGuardando] = useState('0');
-
-        const [propiedadSeleccionada, guardarPropiedadSeleccionada] = useState(false);
-
-        const[cargando, guardarCargando] = useState(true);
-        
+        const [textoGuardando, guardarTextoGuardando] = useState('0');        
 
         const [habitaciones, guardarHabitaciones] = useState(
           [
-            {id: 1,nombre: "101",libre: true,estado: 1},
-            {id: 2,nombre: "101",libre: true,estado: 1}
+            {id: 0,nombre: "--Seleccione--",libre: true,estado: 1}
           ]
         )
-
-      //const [habitaciones, guardarHabitaciones] = useState([]);
-        
-/*
-        useEffect(() => {
-          console.log("buscar habitaciones");
-          const consultarHabitaciones = async () => {
-            const url = `https://kaela2505.herokuapp.com/habitacion?idPropiedad=${propiedad}`;
-            console.log(url);
-            const resultado = await axios.get(url);
-            console.log(resultado);
-            guardarHabitaciones(resultado.data);
-
-            console.log("habitaciones");
-            console.log(habitaciones);
-        }
-        consultarHabitaciones();
-  
-      }, [propiedad]);
-
-      */
-
-
-      
-     /*
-        useEffect(() => {
-          console.log("efe 1");
-          console.log(propiedad);
-          const consultarHabitaciones = () =>{
-            
-            fetch(`https://kaela2505.herokuapp.com/habitacion?idPropiedad=${propiedad}`)
-            .then(response => response.json())
-            .then(data => {
-              console.log(data);
-              guardarHabitaciones(data);
-              console.log("hab");
-              console.log(habitaciones);
-            });
-          }
-        
-        consultarHabitaciones();
-
-      }, [propiedad]);*/
-
-      /*
-      useEffect(() => {
-        const consultarAPI = async () => {
-          
-            const url = `https://kaela2505.herokuapp.com/habitacion?idPropiedad=${propiedad}`;
-            console.log(url);
-            const resultado = await axios.get(url);
-            console.log(resultado);
-            console.log(textoGuardando);
-            guardarTextoGuardando("1");
-            guardarHabitaciones(resultado);
-            console.log(textoGuardando);
-            
-        }
-        consultarAPI();
-
-    }, [textoGuardando]);
-*/
-
-
-        const showDatePicker = () => {
-          setDatePickerVisibility(true);
-        };
-      
-        const hideDatePicker = () => {
-          setDatePickerVisibility(false);
-        };
-      
-        const confirmarFecha = (date) => {
-          const opciones = {year:'numeric', month:'long', day:"2-digit"};
-          guardarFecha(date.toLocaleDateString('es-ES',opciones));
-          guardarFechaIngreso(date.toLocaleDateString('es-ES',opciones));
-          hideDatePicker();
-        };
 
         const guardarInquilino = () => {
 
@@ -159,8 +73,6 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
 
         const obtenerPropiedad = (propiedad) => {
           guardarPropiedad(propiedad);
-          guardarTextoGuardando("3");
-          console.log(propiedad);
           consultarHabitaciones(propiedad);
 
         }
@@ -170,15 +82,12 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
           fetch(`https://kaela2505.herokuapp.com/habitacion?idPropiedad=${idPropiedad}`)
           .then(response => response.json())
           .then(data => {
-            console.log(data);
             guardarHabitaciones(data);
-            console.log("hab");
-            console.log(habitaciones);
           });
         }
+
         const obtenerHabitacion = (habit) => {
           guardarHabitacion(habit);
-          guardarTextoGuardando("4");
         }
 
 

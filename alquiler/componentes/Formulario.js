@@ -4,6 +4,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DatePicker from 'react-native-datepicker';
 import {Picker} from '@react-native-community/picker';
 import axios from 'axios';
+import Dialog from "react-native-dialog";
 
 
 const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guardarDataRegistro}) => {
@@ -20,8 +21,14 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
         const [montoAlquiler, guardarMontoAlquiler] = useState('');
 
 
+        const [visibleDialogRegistroOk, setVisibleDialogRegistroOk] = useState(false);
+        const [visibleDialogRegistroError, setVisibleDialogRegistroError] = useState(false);
 
-        const [textoGuardando, guardarTextoGuardando] = useState('0');        
+
+        
+
+
+
 
         const [habitaciones, guardarHabitaciones] = useState(
           [
@@ -30,32 +37,89 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
         )
 
         const guardarInquilino = () => {
+          
+          var inquilinoFormulario = {};
 
-          if(nombre.trim() === ''){
-            console.log("nombre vacio");
-            return;
+          if(validarFormulario()){
+
+            inquilinoFormulario = {nombre: nombre,
+              apellidoPaterno: apellidoPaterno,
+              apellidoMaterno: apellidoMaterno,
+              tipoDocumento: "1",
+              numeroDocumento: dni,
+              trabajo: "abc",
+              observacion: "abc",
+              fechaIngreso: fechaIngreso,
+              habitacion: habitacion,
+              montoAlquiler: montoAlquiler              
+            }
+
+            console.log("inquilinoFormulario");
+            console.log(inquilinoFormulario);
+            guardarInquilinoAPI(inquilinoFormulario);
+
+
+
           }
 
-            //Ocultar formulario
-            guardarTextoGuardando("2");
-            guardarDataRegistro(
-              {nombre: nombre,
-                apellidoPaterno: apellidoPaterno,
-                apellidoMaterno: apellidoMaterno,
-                tipoDocumento: "1",
-                numeroDocumento: dni,
-                trabajo: "abc",
-                observacion: "abc",
-                fechaIngreso: fechaIngreso,
-                habitacion: habitacion,
-                montoAlquiler: montoAlquiler              
-              })
-            //guardarMostrarForm(false);
-            guardarConsultarAPI(true);
 
 
             //Resetear Formulario
 
+
+        }
+
+        const validarFormulario = () => {
+          if(nombre.trim() === ''){
+            console.log("nombre vacio");
+            return false;
+          }else{
+            return true;
+          }
+
+
+        }
+
+        const guardarInquilinoAPI = (inquilinoFormulario) => {
+
+          console.log("consultarAPIRegistro");
+          const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inquilinoFormulario)
+          };
+
+          console.log("registrando");
+          console.log(inquilinoFormulario);
+          fetch('https://kaela2505.herokuapp.com/registro', requestOptions)
+            //.then(response => response.json())
+            //.then(data => console.log(response))
+            .then(
+              response => {
+                console.log(response);
+
+                const data = response.json();
+
+                // check for error response
+                if (!response.ok) {
+                    // get error message from body or default to response status
+                    const error = (data && data.message) || response.status;
+                    return Promise.reject(error);
+                }
+
+                console.log("Registro OK");
+                //setVisibleDialogRegistro(true);
+                setVisibleDialogRegistroOk(true);
+
+              }
+            )
+            .catch(error => {
+              //this.setState({ errorMessage: error.toString() });
+              console.log('There was an error!', error);
+              setVisibleDialogRegistroError(true);
+            });
+
+       
 
         }
 
@@ -91,6 +155,19 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
         }
 
 
+        const handleOkDialogRegistro = () => {
+          // The user has pressed the "Delete" button, so here you can do your own logic.
+          // ...Your logic
+          setVisibleDialogRegistroOk(false);
+        };
+      
+        const handleOkDialogError = () => {
+          // The user has pressed the "Delete" button, so here you can do your own logic.
+          // ...Your logic
+          setVisibleDialogRegistroError(false);
+        };
+
+
     return (
         <>
         <ScrollView style={styles.Formulario}>
@@ -123,6 +200,7 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
                 <TextInput
                   style={styles.input}
                   onChangeText= {(texto) => guardarCelular(texto)}
+                  keyboardType= 'numeric'
                 />
             </View>
 
@@ -214,9 +292,30 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
                     <Text style={styles.textoSubmit}>Guardar</Text>
                 </TouchableHighlight>
             </View>
-            <View style={{height:30}}>
-              <Text>{textoGuardando}</Text>
-            </View>
+
+
+
+
+            <View style={styles.container}>
+          <Dialog.Container visible={visibleDialogRegistroOk}>
+            <Dialog.Title>Confirmacion</Dialog.Title>
+            <Dialog.Description>
+              REGISTRO EXITOSO
+            </Dialog.Description>
+            <Dialog.Button label="OK" onPress={handleOkDialogRegistro} />
+          </Dialog.Container>
+        </View>
+
+        <View style={styles.container}>
+          <Dialog.Container visible={visibleDialogRegistroError}>
+            <Dialog.Title>Error</Dialog.Title>
+            <Dialog.Description>
+              OCURRIO UN ERROR
+            </Dialog.Description>
+            <Dialog.Button label="OK" onPress={handleOkDialogError} />
+          </Dialog.Container>
+        </View>
+           
         </ScrollView>
         </>
 
@@ -235,7 +334,7 @@ const styles = StyleSheet.create({
     },
     label:{
         fontWeight:"bold",
-        fontSize: 18,
+        fontSize: 20,
         marginTop: 20
     },
     input: {
@@ -243,7 +342,8 @@ const styles = StyleSheet.create({
         height: 50,
         borderColor: '#e1e1e1',
         backgroundColor: '#e1e1e1',
-        borderStyle: 'solid'
+        borderStyle: 'solid',
+        fontSize:22
     },
     btnSubmit: {
       padding: 10,

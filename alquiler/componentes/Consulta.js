@@ -4,7 +4,7 @@ import axios from 'axios';
 import ItemInquilino from './ItemInquilino';
 import {Picker} from '@react-native-community/picker';
 
-const Consulta = () => {
+const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
 
     const [consultarAPI, guardarConsultarAPI] = useState(true);
 
@@ -18,35 +18,44 @@ const Consulta = () => {
 
     const obtenerPropiedad = (propiedad) => {
         guardarPropiedad(propiedad);
+        consultarInquilinoPorPropiedad(propiedad);
+        
+        
     }
 
+    const consultarInquilinoPorPropiedad =  async (idPropiedad) => {
+        if(consultarAPI){
+          console.log('consultando libros');
+          //const url = `https://www.json-generator.com/api/json/get/ccLAsEcOSq?indent=1`;
+          //const url = `http://localhost:9091/consulta/inquilino?idPropiedad=1`;
+          const url =`https://kaela2505.herokuapp.com/consulta/inquilino?idPropiedad=${idPropiedad}`;
+          console.log(url);
+          const resultado = await axios.get(url);
+
+         console.log(resultado);
+         guardarInquilinos(resultado.data);
+
+  
+        }
+      }
+
+
     useEffect(() => {
-        const cotizarCriptomoneda = async () => {
+        const consultarInquilinos = async () => {
           if(consultarAPI){
             console.log('consultando libros');
             //const url = `https://www.json-generator.com/api/json/get/ccLAsEcOSq?indent=1`;
             //const url = `http://localhost:9091/consulta/inquilino?idPropiedad=1`;
-            const url ='https://kaela2505.herokuapp.com/consulta/inquilinoDemo?idPropiedad=1';
+            const url ='https://kaela2505.herokuapp.com/consulta/inquilino?idPropiedad=1';
             console.log(url);
             const resultado = await axios.get(url);
 
            console.log(resultado);
            guardarInquilinos(resultado.data);
-
-
-
-            console.log('consultando inquilinos');
-              const url2 = `http://localhost:9091/consulta/inquilino?idPropiedad=1`;
-              console.log(url2);
-              const resultado2 = await axios.get(url2);
-  
-             console.log(resultado2);
     
           }
         }
-
-      
-        cotizarCriptomoneda();
+        consultarInquilinos();
         
       }, []);
 
@@ -94,7 +103,9 @@ const Consulta = () => {
         <FlatList
               style={styles.listado}
               data={inquilinos}
-              renderItem= {({item}) => <ItemInquilino item = {item} />}
+              renderItem= {({item}) => <ItemInquilino item = {item}
+              setVisibleDialogPago= {setVisibleDialogPago}
+              setInquilinoSeleccionado = {setInquilinoSeleccionado} />}
               keyExtractor={ inquilinos => inquilinos.idInquilino}
             />
        
@@ -102,7 +113,7 @@ const Consulta = () => {
         
         </>
 
-    )
+    ) 
 }
 
 const styles = StyleSheet.create({

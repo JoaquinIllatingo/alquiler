@@ -7,7 +7,7 @@ import axios from 'axios';
 import Dialog from "react-native-dialog";
 
 
-const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guardarDataRegistro}) => {
+const Formulario = ({guardarMostrarForm}) => {
 
 
         const [nombre, guardarNombre] = useState('');
@@ -16,17 +16,16 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
         const [celular, guardarCelular] = useState('');
         const [dni, guardarDni] = useState('');
         const [fechaIngreso, guardarFechaIngreso] = useState(new Date());
-        const [propiedad, guardarPropiedad] = useState(1);
-        const [habitacion, guardarHabitacion] = useState('');
+        const [propiedad, guardarPropiedad] = useState(0);
+        const [habitacion, guardarHabitacion] = useState(0);
         const [montoAlquiler, guardarMontoAlquiler] = useState('');
 
 
         const [visibleDialogRegistroOk, setVisibleDialogRegistroOk] = useState(false);
         const [visibleDialogRegistroError, setVisibleDialogRegistroError] = useState(false);
+        const [visibleDialogAlerta, setVisibleDialogAlerta] = useState(false);
 
-
-        
-
+        const [textoAlerta, setTextoAlerta] = useState("");
 
 
 
@@ -40,11 +39,14 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
           
           var inquilinoFormulario = {};
 
-          if(validarFormulario()){
+          var valid = validarFormulario();
+
+          if(valid === "OK"){
 
             inquilinoFormulario = {nombre: nombre,
               apellidoPaterno: apellidoPaterno,
               apellidoMaterno: apellidoMaterno,
+              celular: celular,
               tipoDocumento: "1",
               numeroDocumento: dni,
               trabajo: "abc",
@@ -60,6 +62,9 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
 
 
 
+          }else{
+            console.log("mostrar Alerta")
+            mostrarAlerta(valid);
           }
 
 
@@ -72,9 +77,21 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
         const validarFormulario = () => {
           if(nombre.trim() === ''){
             console.log("nombre vacio");
-            return false;
+            return "Ingresar Nombre";
+          }else if(apellidoPaterno.trim() === ''){
+            return "Ingresar Apellido Paterno";
+          }else if(apellidoMaterno.trim() === ''){
+            return "Ingresar Apellido Materno";
+          }else if(dni.trim() === ''){
+            return "Ingresar DNI ";
+          }else if(propiedad === 0){
+            return "Seleccione la Propiedad";
+          }else if(habitacion === 0){
+            return "Seleccione la Habitacion";
+          }else if(montoAlquiler.trim() === ''){
+            return "Ingresar el Monto de alquilar";
           }else{
-            return true;
+            return "OK";
           }
 
 
@@ -123,16 +140,22 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
 
         }
 
-        const mostrarAlerta = () =>{
+        const mostrarAlerta_old = (texto) =>{
           Alert.alert(
-            'Error',//titulo
-            'Todos los campos son obligatorios',//mensaje
+            'Alerta',//titulo
+            "ingrese valores",//mensaje
             [
               {
                 text:"OK" //Arreglo de botones
               }
             ]
           )
+        }
+
+        const mostrarAlerta = (texto) =>{
+          setTextoAlerta(texto);
+          setVisibleDialogAlerta(true);
+         
         }
 
         const obtenerPropiedad = (propiedad) => {
@@ -165,6 +188,12 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
           // The user has pressed the "Delete" button, so here you can do your own logic.
           // ...Your logic
           setVisibleDialogRegistroError(false);
+        };
+
+        const handleOkDialogAlerta= () => {
+          // The user has pressed the "Delete" button, so here you can do your own logic.
+          // ...Your logic
+          setVisibleDialogAlerta(false);
         };
 
 
@@ -279,7 +308,7 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
                 <Text style={styles.label}>Monto Alquiler:</Text>
                 <TextInput
                   style={styles.input}
-                  onChangeText= {(texto) => guardarDni(texto)}
+                  onChangeText= {(texto) => guardarMontoAlquiler(texto)}
                   keyboardType= 'numeric'
                 />
             </View>
@@ -297,24 +326,34 @@ const Formulario = ({guardarMostrarForm,guardarConsultarAPI,dataRegistro, guarda
 
 
             <View style={styles.container}>
-          <Dialog.Container visible={visibleDialogRegistroOk}>
-            <Dialog.Title>Confirmacion</Dialog.Title>
-            <Dialog.Description>
-              REGISTRO EXITOSO
-            </Dialog.Description>
-            <Dialog.Button label="OK" onPress={handleOkDialogRegistro} />
-          </Dialog.Container>
-        </View>
+              <Dialog.Container visible={visibleDialogRegistroOk}>
+                <Dialog.Title>Confirmacion</Dialog.Title>
+                <Dialog.Description>
+                  REGISTRO EXITOSO
+                </Dialog.Description>
+                <Dialog.Button label="OK" onPress={handleOkDialogRegistro} />
+              </Dialog.Container>
+            </View>
 
-        <View style={styles.container}>
-          <Dialog.Container visible={visibleDialogRegistroError}>
-            <Dialog.Title>Error</Dialog.Title>
-            <Dialog.Description>
-              OCURRIO UN ERROR
-            </Dialog.Description>
-            <Dialog.Button label="OK" onPress={handleOkDialogError} />
-          </Dialog.Container>
-        </View>
+            <View style={styles.container}>
+              <Dialog.Container visible={visibleDialogRegistroError}>
+                <Dialog.Title>Error</Dialog.Title>
+                <Dialog.Description>
+                  OCURRIO UN ERROR
+                </Dialog.Description>
+                <Dialog.Button label="OK" onPress={handleOkDialogError} />
+              </Dialog.Container>
+            </View>
+
+            <View style={styles.container}>
+              <Dialog.Container visible={visibleDialogAlerta}>
+                <Dialog.Title>Alerta</Dialog.Title>
+                <Dialog.Description>
+                  {textoAlerta}
+                </Dialog.Description>
+                <Dialog.Button label="OK" onPress={handleOkDialogAlerta} />
+              </Dialog.Container>
+            </View>
            
         </ScrollView>
         </>

@@ -6,46 +6,33 @@ import {Picker} from '@react-native-community/picker';
 
 const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
 
-    const [consultarAPI, guardarConsultarAPI] = useState(true);
-
-    const [propiedad, guardarPropiedad] = useState(true);
-
+    const [propiedad, guardarPropiedad] = useState(1);
     const[inquilinos, guardarInquilinos]= useState([]);
 
     const dialogoEliminar = id => {
         console.log('eliminando....', id);
     }
 
-    const obtenerPropiedad = (propiedad) => {
+    const obtenerHabitaciones = (propiedad) => {
         guardarPropiedad(propiedad);
         consultarInquilinoPorPropiedad(propiedad);
-        
         
     }
 
     const consultarInquilinoPorPropiedad =  async (idPropiedad) => {
-        if(consultarAPI){
           console.log('consultando libros');
-          //const url = `https://www.json-generator.com/api/json/get/ccLAsEcOSq?indent=1`;
-          //const url = `http://localhost:9091/consulta/inquilino?idPropiedad=1`;
           const url =`https://kaela2505.herokuapp.com/consulta/inquilino?idPropiedad=${idPropiedad}`;
           console.log(url);
           const resultado = await axios.get(url);
-
          console.log(resultado);
          guardarInquilinos(resultado.data);
 
-  
-        }
+        
       }
 
 
     useEffect(() => {
         const consultarInquilinos = async () => {
-          if(consultarAPI){
-            console.log('consultando libros');
-            //const url = `https://www.json-generator.com/api/json/get/ccLAsEcOSq?indent=1`;
-            //const url = `http://localhost:9091/consulta/inquilino?idPropiedad=1`;
             const url ='https://kaela2505.herokuapp.com/consulta/inquilino?idPropiedad=1';
             console.log(url);
             const resultado = await axios.get(url);
@@ -53,7 +40,7 @@ const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
            console.log(resultado);
            guardarInquilinos(resultado.data);
     
-          }
+          
         }
         consultarInquilinos();
         
@@ -68,10 +55,9 @@ const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
                 <Picker 
                 style = {{width:180}}
                 selectedValue= {propiedad}
-                onValueChange={propiedad => obtenerPropiedad(propiedad)}
+                onValueChange={propiedad => obtenerHabitaciones(propiedad)}
                 itemStyle ={{height:120}}
                 >
-                <Picker.Item label="--Seleccione--" value= ""/>
                 <Picker.Item label="RETAMAS" value= "1"/>
                 <Picker.Item label="CEDROS" value= "2"/>
                 <Picker.Item label="SANTA ANITA" value= "3"/>

@@ -14,7 +14,6 @@ const App = () => {
   const[mostrarFormPago, guardarMostrarFormPago] = useState(false);
 
   const [consultarAPI, guardarConsultarAPI] = useState(false);
-  const[dataRegistro, guardarDataRegistro] = useState({});
 
 
   //DIALOGS
@@ -85,9 +84,6 @@ const App = () => {
             <Text style= {styles.titulo}>Nuevo Inquilino</Text>
             <Formulario 
               guardarMostrarForm={guardarMostrarForm}
-              guardarConsultarAPI = {guardarConsultarAPI}
-              dataRegistro = {dataRegistro}
-              guardarDataRegistro = {guardarDataRegistro}
               
             />
               
@@ -125,10 +121,13 @@ const App = () => {
             <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
               {inquilinoSeleccionado.nombrePersona +" "+inquilinoSeleccionado.apellidoPaterno}
             </Dialog.Description>
-          
 
-            
-
+            <Dialog.Description>
+              Monto de Alquiler
+            </Dialog.Description>
+            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+              {inquilinoSeleccionado.montoAlquiler}
+            </Dialog.Description>        
             
             <Dialog.Description>
               Monto a Pagar

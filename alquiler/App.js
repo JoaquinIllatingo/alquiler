@@ -5,6 +5,7 @@ import { Text, StyleSheet, View, FlatList, TouchableHighlight, TouchableWithoutF
 import Formulario from './componentes/Formulario';
 import Consulta from './componentes/Consulta';
 import Dialog from "react-native-dialog";
+import DeviceInfo from 'react-native-device-info';
 
 
 const App = () => {
@@ -27,12 +28,21 @@ const App = () => {
 
   const [inquilinoSeleccionado, setInquilinoSeleccionado] = useState({});
 
+  const [montoPagar, guardarMontoPagar] = useState();
 
 
   const mostrarFormulario = () => {
+
+    console.log("uniqueId");
     guardarMostrarConsulta(false);
     guardarMostrarFormPago(false);
     guardarMostrarForm(true);
+
+    
+    var uniqueId = DeviceInfo.getUniqueId();
+    
+    console.log(uniqueId);
+
   }
 
   const mostrarListado = () => {
@@ -41,11 +51,6 @@ const App = () => {
     guardarMostrarForm(false);
   }
 
-  const mostrarPago = () => {
-    guardarMostrarConsulta(false);
-    guardarMostrarFormPago(true);
-    guardarMostrarForm(false);
-  }
 
   const cerrarTeclado = ()=> {
     Keyboard.dismiss();
@@ -55,11 +60,58 @@ const App = () => {
 
 
   const handlePagarDialogPago = () =>{
+    accionPagoInquilino(inquilinoSeleccionado);
     setVisibleDialogPago(false);
+    
   }
 
   const handleCerrarDialogPago = () =>{
     setVisibleDialogPago(false);
+
+  }
+
+  const accionPagoInquilino = (inqui) => {
+
+    console.log("pagoInquilino");
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({idRegistro: inqui.idRegistro,
+        monto: montoPagar,
+        fechaPagadoHasta: inqui.fechaFinMensualidad})
+    };
+
+    console.log("pagando");
+    console.log(inqui);
+    fetch('https://kaela2505.herokuapp.com/pago', requestOptions)
+      //.then(response => response.json())
+      //.then(data => console.log(response))
+      .then(
+        response => {
+          console.log(response);
+
+          const data = response.json();
+
+          // check for error response
+          if (!response.ok) {
+              // get error message from body or default to response status
+              const error = (data && data.message) || response.status;
+              return Promise.reject(error);
+          }
+
+          console.log("Registro OK");
+          //setVisibleDialogRegistro(true);
+          //setVisibleDialogRegistroOk(true);
+
+        }
+      )
+      .catch(error => {
+        //this.setState({ errorMessage: error.toString() });
+        console.log('There was an error!', error);
+        //setVisibleDialogRegistroError(true);
+      });
+
+ 
 
   }
 
@@ -132,7 +184,8 @@ const App = () => {
             <Dialog.Description>
               Monto a Pagar
             </Dialog.Description>
-            <Dialog.Input style={styles.inputMontoPago} keyboardType= 'numeric' >
+            <Dialog.Input style={styles.inputMontoPago} keyboardType= 'numeric'
+            onChangeText= {(texto) => guardarMontoPagar(texto)} >
             </Dialog.Input>
 
             <Dialog.Button label="PAGAR" onPress={handlePagarDialogPago} />

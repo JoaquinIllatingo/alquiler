@@ -15,6 +15,7 @@ const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado}) => 
         console.log('eliminando....', id);
     }
 
+    
 
     return (
         <>
@@ -27,7 +28,7 @@ const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado}) => 
             </View>
          
             <View>
-                <Text style={styles.colFecha}>2021-03-15</Text>
+                <Text style={styles.colFecha}>{item.fechaFinMensualidad}</Text>
             </View>
             <View>
                 <TouchableHighlight  onPress={ () => dialogoPagar(item) } style={styles.colBtnDesocupar}>

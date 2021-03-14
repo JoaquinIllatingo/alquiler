@@ -76,7 +76,7 @@ const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
             </View>
          
             <View>
-                <Text style={styles.colFecha}>PAGADO</Text>
+                <Text style={styles.colFecha}>PAGO HASTA</Text>
             </View>
             <View>
                 <Text style={styles.colBtnPagar}>PAGAR</Text>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     },
     colNombre: {
         fontWeight: 'bold',
-        width:100,
+        width:85,
         fontSize: 17,
         marginLeft:5
     },
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     },
     colFecha: {
         fontWeight: 'bold',
-        width:95,
+        width:110,
         fontSize: 17,
         marginLeft:5
     },
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         width:60,
         fontSize: 17,
-        marginLeft:10,
+        marginLeft:15,
     },
     colBtnBorrar: {
         fontWeight: 'bold',

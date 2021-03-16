@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   contenido:{
     flex:1,
-    marginHorizontal: '2.5%'
+    marginHorizontal: 2
   },
   listado:{
     flex:1
@@ -130,16 +130,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       textAlign: 'center'
   },
-  inputMontoPago:{
-    backgroundColor:"#74D9D9"
-  },
-  tituloDialog:{
-    fontWeight: 'bold',
-    fontSize: 20,
-    flexDirection: "row",
-    paddingBottom:30
-    
-  }
+  
 
 
 });

@@ -89,6 +89,37 @@ const Consulta = ({}) => {
     
       }
 
+      const accionDesocuparInquilino = (inqui) => {
+
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({idRegistro: inqui.idRegistro})
+        };
+    
+        fetch('https://kaela2505.herokuapp.com/registro/desocupar', requestOptions)
+          .then(
+            response => {
+              console.log(response);
+              const data = response.json();
+              if (!response.ok) {
+                  const error = (data && data.message) || response.status;
+                  return Promise.reject(error);
+              }
+              console.log("Desocupo OK");
+              setVisibleDialogConfirmacion_Error(true);
+              setTextoDialogConfirmacion_Error("Se desocupó exitosamente al inquilino")
+              consultarInquilinoPorPropiedad(propiedad);
+            }
+          )
+          .catch(error => {
+            console.log('There was an error!', error);
+            setVisibleDialogConfirmacion_Error(true);
+            setTextoDialogConfirmacion_Error("Ocurrió un error al desocupar al inquilino.")
+          });
+    
+      }
+
       const accionPagarDialogPago = () =>{
         accionPagoInquilino(inquilinoSeleccionado);
         setVisibleDialogPago(false);
@@ -102,6 +133,16 @@ const Consulta = ({}) => {
       const accionOkDialogConfirmacion_Error = () =>{
           setVisibleDialogConfirmacion_Error(false);
       }
+
+      const accionNoDialogEliminar = () =>{
+        setVisibleDialogEliminar(false)
+      }
+      const accionSiDialogEliminar = () =>{
+        accionDesocuparInquilino(inquilinoSeleccionado);
+        setVisibleDialogEliminar(false)
+      }
+
+      
 
 
     
@@ -148,7 +189,10 @@ const Consulta = ({}) => {
               data={inquilinos}
               renderItem= {({item}) => <ItemInquilino item = {item}
               setVisibleDialogPago= {setVisibleDialogPago}
-              setInquilinoSeleccionado = {setInquilinoSeleccionado} />}
+              setInquilinoSeleccionado = {setInquilinoSeleccionado}
+              setVisibleDialogEliminar = {setVisibleDialogEliminar}
+              />}
+              
               keyExtractor={ inquilinos => inquilinos.idInquilino}
             />
 
@@ -183,6 +227,19 @@ const Consulta = ({}) => {
         </View>
 
         <View style={styles.container}>
+          <Dialog.Container visible={visibleDialogEliminar}>
+            <Dialog.Title style={styles.tituloDialog}>Desocupar Inquilino</Dialog.Title>
+           
+            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+             ¿Esta seguro de desocupar a {inquilinoSeleccionado.nombrePersona +" "+inquilinoSeleccionado.apellidoPaterno} ?
+            </Dialog.Description>
+
+            <Dialog.Button label="NO" onPress={accionNoDialogEliminar} />
+            <Dialog.Button label="SI" onPress={accionSiDialogEliminar} />
+          </Dialog.Container>
+        </View> 
+
+        <View style={styles.container}>
           <Dialog.Container visible={visibleDialogConfirmacion_Error}>
             <Dialog.Title style={styles.tituloDialog}>Confirmacion</Dialog.Title>
            
@@ -192,10 +249,9 @@ const Consulta = ({}) => {
 
             <Dialog.Button label="OK" onPress={accionOkDialogConfirmacion_Error} />
           </Dialog.Container>
-        </View>
-       
+        </View> 
 
-        
+
         </>
 
     ) 
@@ -205,12 +261,6 @@ const styles = StyleSheet.create({
    
     filtro:{
         flexDirection:'row',
-    },
-
-    celda:{
-        borderStyle: 'solid',
-        marginLeft: 10,
-        textAlign: 'center'
     },
     label: {
         fontWeight: 'bold',
@@ -273,8 +323,8 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderBottomWidth: 1,
         paddingVertical: 1,
-        paddingHorizontal: 1,
-        flexDirection:'row'
+        flexDirection:'row',
+        justifyContent: "space-between"
     },
 
     inputMontoPago:{

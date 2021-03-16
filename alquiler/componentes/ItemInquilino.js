@@ -1,21 +1,16 @@
 import React from 'react';
 import { Text, StyleSheet, View, TouchableHighlight, Image } from 'react-native';
 
-const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado}) => {
+const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado, setVisibleDialogEliminar}) => {
 
     const abrirDialogPagar = inquilino => {
         setInquilinoSeleccionado(inquilino);
         setVisibleDialogPago(true);
-        
-        console.log('dialogoPagar....', inquilino);
-        
     }
-    const abrirDialogEliminar = id => {
-        //setVisibleDialogPago(true);
-        console.log('eliminando....', id);
+    const abrirDialogEliminar = inquilino => {
+        setInquilinoSeleccionado(inquilino);
+        setVisibleDialogEliminar(true);
     }
-
-    
 
     return (
         <>
@@ -60,7 +55,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         flexDirection:'row',
-        flex: 1
+        flex: 1,
+        justifyContent: "space-between"
 
     },
     imagestyle:{

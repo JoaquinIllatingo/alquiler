@@ -12,42 +12,18 @@ const App = () => {
 
   const[mostrarForm, guardarMostrarForm] = useState(false);
   const[mostrarConsulta, guardarMostrarConsulta] = useState(false);
-  const[mostrarFormPago, guardarMostrarFormPago] = useState(false);
-
-  const [consultarAPI, guardarConsultarAPI] = useState(false);
-
-
-  //DIALOGS
-  const [visibleDialogRegistro, setVisibleDialogRegistro] = useState(false);
-  const [visibleDialogError, setVisibleDialogError] = useState(false);
-  const [visibleDialogPago, setVisibleDialogPago] = useState(false);
-  const [visibleDialogEliminar, setVisibleDialogEliminar] = useState(false);
-
-  const [visibleDialogPagoConfirmacion, setVisibleDialogPagoConfirmacion] = useState(false);
-  const [visibleDialogEliminarConfirmacion, setVisibleDialogEliminarConfirmacion] = useState(false);
-
-  const [inquilinoSeleccionado, setInquilinoSeleccionado] = useState({});
-
-  const [montoPagar, guardarMontoPagar] = useState();
-
 
   const mostrarFormulario = () => {
 
-    console.log("uniqueId");
     guardarMostrarConsulta(false);
-    guardarMostrarFormPago(false);
     guardarMostrarForm(true);
-
-    
     var uniqueId = DeviceInfo.getUniqueId();
-    
     console.log(uniqueId);
 
   }
 
   const mostrarListado = () => {
     guardarMostrarConsulta(true);
-    guardarMostrarFormPago(false);
     guardarMostrarForm(false);
   }
 
@@ -57,63 +33,6 @@ const App = () => {
   }
 
 
-
-
-  const handlePagarDialogPago = () =>{
-    accionPagoInquilino(inquilinoSeleccionado);
-    setVisibleDialogPago(false);
-    
-  }
-
-  const handleCerrarDialogPago = () =>{
-    setVisibleDialogPago(false);
-
-  }
-
-  const accionPagoInquilino = (inqui) => {
-
-    console.log("pagoInquilino");
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({idRegistro: inqui.idRegistro,
-        monto: montoPagar,
-        fechaPagadoHasta: inqui.fechaFinMensualidad})
-    };
-
-    console.log("pagando");
-    console.log(inqui);
-    fetch('https://kaela2505.herokuapp.com/pago', requestOptions)
-      //.then(response => response.json())
-      //.then(data => console.log(response))
-      .then(
-        response => {
-          console.log(response);
-
-          const data = response.json();
-
-          // check for error response
-          if (!response.ok) {
-              // get error message from body or default to response status
-              const error = (data && data.message) || response.status;
-              return Promise.reject(error);
-          }
-
-          console.log("Registro OK");
-          //setVisibleDialogRegistro(true);
-          //setVisibleDialogRegistroOk(true);
-
-        }
-      )
-      .catch(error => {
-        //this.setState({ errorMessage: error.toString() });
-        console.log('There was an error!', error);
-        //setVisibleDialogRegistroError(true);
-      });
-
- 
-
-  }
 
   return (
     <TouchableWithoutFeedback onPress={() => cerrarTeclado()}>
@@ -149,8 +68,6 @@ const App = () => {
           {mostrarConsulta?(
             <>
             <Consulta
-              setVisibleDialogPago = {setVisibleDialogPago}
-              setInquilinoSeleccionado = {setInquilinoSeleccionado}
             />
               
             </>
@@ -164,34 +81,7 @@ const App = () => {
         </View>
 
 
-        <View style={styles.container}>
-          <Dialog.Container visible={visibleDialogPago}>
-            <Dialog.Title style={styles.tituloDialog}>Realizar Pago</Dialog.Title>
-            <Dialog.Description>
-              Inquilino
-            </Dialog.Description>
-            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
-              {inquilinoSeleccionado.nombrePersona +" "+inquilinoSeleccionado.apellidoPaterno}
-            </Dialog.Description>
-
-            <Dialog.Description>
-              Monto de Alquiler
-            </Dialog.Description>
-            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
-              {inquilinoSeleccionado.montoAlquiler}
-            </Dialog.Description>        
-            
-            <Dialog.Description>
-              Monto a Pagar
-            </Dialog.Description>
-            <Dialog.Input style={styles.inputMontoPago} keyboardType= 'numeric'
-            onChangeText= {(texto) => guardarMontoPagar(texto)} >
-            </Dialog.Input>
-
-            <Dialog.Button label="PAGAR" onPress={handlePagarDialogPago} />
-            <Dialog.Button label="ATRAS" onPress={handleCerrarDialogPago} />
-          </Dialog.Container>
-        </View>
+        
 
       </View>
     </TouchableWithoutFeedback>

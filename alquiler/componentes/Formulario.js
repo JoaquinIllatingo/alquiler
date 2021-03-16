@@ -394,7 +394,15 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontWeight: 'bold',
         textAlign: 'center'
-    }
+    },
+
+    tituloDialog:{
+      fontWeight: 'bold',
+      fontSize: 20,
+      flexDirection: "row",
+      paddingBottom:30
+      
+  }
 
 })
 

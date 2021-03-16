@@ -3,14 +3,14 @@ import { Text, StyleSheet, View, TouchableHighlight, Image } from 'react-native'
 
 const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado}) => {
 
-    const dialogoPagar = inquilino => {
+    const abrirDialogPagar = inquilino => {
         setInquilinoSeleccionado(inquilino);
         setVisibleDialogPago(true);
         
         console.log('dialogoPagar....', inquilino);
         
     }
-    const dialogEliminar = id => {
+    const abrirDialogEliminar = id => {
         //setVisibleDialogPago(true);
         console.log('eliminando....', id);
     }
@@ -31,14 +31,14 @@ const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado}) => 
                 <Text style={styles.colFecha}>{item.fechaFinMensualidad}</Text>
             </View>
             <View>
-                <TouchableHighlight  onPress={ () => dialogoPagar(item) } style={styles.colBtnDesocupar}>
+                <TouchableHighlight  onPress={ () => abrirDialogPagar(item) } style={styles.colBtnDesocupar}>
                     <Image style={styles.imagestyle} 
                     source={require('../assets/img/pagar.jpg')}
                     />
                 </TouchableHighlight>
             </View>
             <View>
-                <TouchableHighlight  onPress={ () => dialogEliminar(item.idInquilino) } style={styles.colBtnDesocupar}>
+                <TouchableHighlight  onPress={ () => abrirDialogEliminar(item) } style={styles.colBtnDesocupar}>
                     <Image style={styles.imagestyle} 
                     source={require('../assets/img/eliminar.jpg')}
                     />

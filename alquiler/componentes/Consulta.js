@@ -3,15 +3,26 @@ import { Text, StyleSheet, View, TouchableHighlight, FlatList } from 'react-nati
 import axios from 'axios';
 import ItemInquilino from './ItemInquilino';
 import {Picker} from '@react-native-community/picker';
+import Dialog from "react-native-dialog";
 
-const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
+const Consulta = ({}) => {
 
     const [propiedad, guardarPropiedad] = useState(1);
     const[inquilinos, guardarInquilinos]= useState([]);
+    const [inquilinoSeleccionado, setInquilinoSeleccionado] = useState({});
 
-    const dialogoEliminar = id => {
+    const [montoPagar, guardarMontoPagar] = useState();
+    const [visibleDialogPago, setVisibleDialogPago] = useState(false);
+    const [visibleDialogEliminar, setVisibleDialogEliminar] = useState(false);
+  
+    const [visibleDialogConfirmacion_Error, setVisibleDialogConfirmacion_Error] = useState(false);
+    const [textoDialogConfirmacion_Error, setTextoDialogConfirmacion_Error] = useState("");
+
+    const dialogoEliminar = inquilinar => {
         console.log('eliminando....', id);
     }
+
+    
 
     const obtenerHabitaciones = (propiedad) => {
         guardarPropiedad(propiedad);
@@ -20,7 +31,6 @@ const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
     }
 
     const consultarInquilinoPorPropiedad =  async (idPropiedad) => {
-          console.log('consultando libros');
           const url =`https://kaela2505.herokuapp.com/consulta/inquilino?idPropiedad=${idPropiedad}`;
           console.log(url);
           const resultado = await axios.get(url);
@@ -45,6 +55,53 @@ const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
         consultarInquilinos();
         
       }, []);
+
+      const accionPagoInquilino = (inqui) => {
+
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({idRegistro: inqui.idRegistro,
+            monto: montoPagar,
+            fechaPagadoHasta: inqui.fechaFinMensualidad})
+        };
+    
+        fetch('https://kaela2505.herokuapp.com/pago', requestOptions)
+          .then(
+            response => {
+              console.log(response);
+              const data = response.json();
+              if (!response.ok) {
+                  const error = (data && data.message) || response.status;
+                  return Promise.reject(error);
+              }
+              console.log("Registro OK");
+              setVisibleDialogConfirmacion_Error(true);
+              setTextoDialogConfirmacion_Error("El pago se realizó exitosamente.")
+              consultarInquilinoPorPropiedad(propiedad);
+            }
+          )
+          .catch(error => {
+            console.log('There was an error!', error);
+            setVisibleDialogConfirmacion_Error(true);
+            setTextoDialogConfirmacion_Error("Ocurrió un error al realizar el pago.")
+          });
+    
+      }
+
+      const accionPagarDialogPago = () =>{
+        accionPagoInquilino(inquilinoSeleccionado);
+        setVisibleDialogPago(false);
+        
+      }
+    
+      const accionCancelarDialogPago = () =>{
+        setVisibleDialogPago(false);
+    
+      }
+      const accionOkDialogConfirmacion_Error = () =>{
+          setVisibleDialogConfirmacion_Error(false);
+      }
 
 
     
@@ -94,6 +151,48 @@ const Consulta = ({setVisibleDialogPago,setInquilinoSeleccionado}) => {
               setInquilinoSeleccionado = {setInquilinoSeleccionado} />}
               keyExtractor={ inquilinos => inquilinos.idInquilino}
             />
+
+
+        <View style={styles.container}>
+          <Dialog.Container visible={visibleDialogPago}>
+            <Dialog.Title style={styles.tituloDialog}>Realizar Pago</Dialog.Title>
+            <Dialog.Description>
+              Inquilino
+            </Dialog.Description>
+            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+              {inquilinoSeleccionado.nombrePersona +" "+inquilinoSeleccionado.apellidoPaterno}
+            </Dialog.Description>
+
+            <Dialog.Description>
+              Monto de Alquiler
+            </Dialog.Description>
+            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+              {inquilinoSeleccionado.montoAlquiler}
+            </Dialog.Description>        
+            
+            <Dialog.Description>
+              Monto a Pagar
+            </Dialog.Description>
+            <Dialog.Input style={styles.inputMontoPago} keyboardType= 'numeric'
+            onChangeText= {(texto) => guardarMontoPagar(texto)} >
+            </Dialog.Input>
+
+            <Dialog.Button label="ATRAS" onPress={accionCancelarDialogPago} />
+            <Dialog.Button label="PAGAR" onPress={accionPagarDialogPago } />
+          </Dialog.Container>
+        </View>
+
+        <View style={styles.container}>
+          <Dialog.Container visible={visibleDialogConfirmacion_Error}>
+            <Dialog.Title style={styles.tituloDialog}>Confirmacion</Dialog.Title>
+           
+            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+            {textoDialogConfirmacion_Error}
+            </Dialog.Description>
+
+            <Dialog.Button label="OK" onPress={accionOkDialogConfirmacion_Error} />
+          </Dialog.Container>
+        </View>
        
 
         
@@ -177,6 +276,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 1,
         flexDirection:'row'
     },
+
+    inputMontoPago:{
+        backgroundColor:"#74D9D9"
+    },
+    tituloDialog:{
+        fontWeight: 'bold',
+        fontSize: 20,
+        flexDirection: "row",
+        paddingBottom:30
+        
+    }
 })
  
 export default Consulta;

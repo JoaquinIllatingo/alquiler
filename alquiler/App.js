@@ -37,7 +37,7 @@ const App = () => {
   return (
     <TouchableWithoutFeedback onPress={() => cerrarTeclado()}>
       <View style= {styles.contenedor}>
-        <Text style= {styles.titulo}>Sistema de Alquiler</Text>
+        <Text style= {styles.titulo}>Alquiler Illatingo</Text>
 
               <View style = {styles.barraBotones}>
                   <TouchableHighlight onPress={ () => mostrarListado() } style={styles.btnMostrarForm}>

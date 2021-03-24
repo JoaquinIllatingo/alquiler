@@ -3,6 +3,7 @@ import { Text, StyleSheet, View, TouchableHighlight, Image } from 'react-native'
 
 const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado, setVisibleDialogEliminar}) => {
 
+
     const abrirDialogPagar = inquilino => {
         setInquilinoSeleccionado(inquilino);
         setVisibleDialogPago(true);
@@ -12,15 +13,23 @@ const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado, setV
         setVisibleDialogEliminar(true);
     }
 
+
     return (
         <>
         <View style={styles.fila}>
             <View>
                 <Text style={styles.colHabitacion}>{item.nombreHabitacion}</Text>
             </View>
-            <View>
-                <Text style={styles.colNombre, styles.colNombre}>{item.nombrePersona}</Text>
+            {item.debe? (
+                 <View>
+                 <Text style={styles.colNombreRojo}>{item.nombrePersona}</Text>
+             </View>
+            ):(
+                <View>
+                <Text style={styles.colNombre}>{item.nombrePersona}</Text>
             </View>
+            )}
+           
          
             <View>
                 <Text style={styles.colFecha}>{item.fechaFinMensualidad}</Text>
@@ -41,6 +50,7 @@ const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado, setV
             </View>
         </View>
 
+        
 
         </>
     )
@@ -73,6 +83,13 @@ const styles = StyleSheet.create({
         width:30,
         fontSize: 17,
         marginLeft:-5
+    },
+    colNombreRojo: {
+        fontWeight: 'bold',
+        width:100,
+        fontSize: 17,
+        marginLeft:5,
+        color:'red'
     },
     colNombre: {
         fontWeight: 'bold',

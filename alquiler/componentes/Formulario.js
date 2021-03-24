@@ -5,6 +5,7 @@ import DatePicker from 'react-native-datepicker';
 import {Picker} from '@react-native-community/picker';
 import axios from 'axios';
 import Dialog from "react-native-dialog";
+import DeviceInfo from 'react-native-device-info';
 
 
 const Formulario = ({guardarMostrarForm}) => {
@@ -100,9 +101,10 @@ const Formulario = ({guardarMostrarForm}) => {
         const guardarInquilinoAPI = (inquilinoFormulario) => {
 
           console.log("consultarAPIRegistro");
+          var uniqueId = DeviceInfo.getUniqueId();
           const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'uuid': uniqueId },
             body: JSON.stringify(inquilinoFormulario)
           };
 
@@ -140,17 +142,6 @@ const Formulario = ({guardarMostrarForm}) => {
 
         }
 
-        const mostrarAlerta_old = (texto) =>{
-          Alert.alert(
-            'Alerta',//titulo
-            "ingrese valores",//mensaje
-            [
-              {
-                text:"OK" //Arreglo de botones
-              }
-            ]
-          )
-        }
 
         const mostrarAlerta = (texto) =>{
           setTextoAlerta(texto);
@@ -179,20 +170,14 @@ const Formulario = ({guardarMostrarForm}) => {
 
 
         const handleOkDialogRegistro = () => {
-          // The user has pressed the "Delete" button, so here you can do your own logic.
-          // ...Your logic
           setVisibleDialogRegistroOk(false);
         };
       
         const handleOkDialogError = () => {
-          // The user has pressed the "Delete" button, so here you can do your own logic.
-          // ...Your logic
           setVisibleDialogRegistroError(false);
         };
 
         const handleOkDialogAlerta= () => {
-          // The user has pressed the "Delete" button, so here you can do your own logic.
-          // ...Your logic
           setVisibleDialogAlerta(false);
         };
 

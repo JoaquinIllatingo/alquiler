@@ -4,11 +4,15 @@ import axios from 'axios';
 import ItemInquilino from './ItemInquilino';
 import {Picker} from '@react-native-community/picker';
 import Dialog from "react-native-dialog";
+import DeviceInfo from 'react-native-device-info';
 
 const Consulta = ({}) => {
 
     const [propiedad, guardarPropiedad] = useState(1);
     const[inquilinos, guardarInquilinos]= useState([]);
+
+    //let listaInquilinos = [];
+
     const [inquilinoSeleccionado, setInquilinoSeleccionado] = useState({});
 
     const [montoPagar, guardarMontoPagar] = useState();
@@ -18,11 +22,6 @@ const Consulta = ({}) => {
     const [visibleDialogConfirmacion_Error, setVisibleDialogConfirmacion_Error] = useState(false);
     const [textoDialogConfirmacion_Error, setTextoDialogConfirmacion_Error] = useState("");
 
-    const dialogoEliminar = inquilinar => {
-        console.log('eliminando....', id);
-    }
-
-    
 
     const obtenerHabitaciones = (propiedad) => {
         guardarPropiedad(propiedad);
@@ -30,25 +29,16 @@ const Consulta = ({}) => {
         
     }
 
-    const consultarInquilinoPorPropiedad =  async (idPropiedad) => {
-          const url =`https://kaela2505.herokuapp.com/consulta/inquilino?idPropiedad=${idPropiedad}`;
-          console.log(url);
-          const resultado = await axios.get(url);
-         console.log(resultado);
-         guardarInquilinos(resultado.data);
-
-        
-      }
-
-
     useEffect(() => {
         const consultarInquilinos = async () => {
+          var uniqueId = DeviceInfo.getUniqueId();
             const url ='https://kaela2505.herokuapp.com/consulta/inquilino?idPropiedad=1';
             console.log(url);
-            const resultado = await axios.get(url);
+            const resultado = await axios.get(url, { headers: { uuid: uniqueId } });
 
            console.log(resultado);
            guardarInquilinos(resultado.data);
+           //listaInquilinos = resultado.data;
     
           
         }
@@ -56,11 +46,23 @@ const Consulta = ({}) => {
         
       }, []);
 
-      const accionPagoInquilino = (inqui) => {
+      const consultarInquilinoPorPropiedad =  async (idPropiedad) => {
 
+        var uniqueId = DeviceInfo.getUniqueId();
+        const url =`https://kaela2505.herokuapp.com/consulta/inquilino?idPropiedad=${idPropiedad}`;
+        console.log(url);
+        const resultado = await axios.get(url, { headers: { uuid: uniqueId } });
+        console.log(resultado);
+        guardarInquilinos(resultado.data);
+        //listaInquilinos = resultado.data;
+          
+      }
+
+      const accionPagoInquilino = (inqui) => {
+        var uniqueId = DeviceInfo.getUniqueId();
         const requestOptions = {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json','uuid':uniqueId },
           body: JSON.stringify({idRegistro: inqui.idRegistro,
             monto: montoPagar,
             fechaPagadoHasta: inqui.fechaFinMensualidad})
@@ -75,10 +77,11 @@ const Consulta = ({}) => {
                   const error = (data && data.message) || response.status;
                   return Promise.reject(error);
               }
-              console.log("Registro OK");
+              console.log("PAGO OK");
               setVisibleDialogConfirmacion_Error(true);
-              setTextoDialogConfirmacion_Error("El pago se realizó exitosamente.")
               consultarInquilinoPorPropiedad(propiedad);
+              setTextoDialogConfirmacion_Error("El pago se realizó exitosamente.")
+              
             }
           )
           .catch(error => {
@@ -90,10 +93,10 @@ const Consulta = ({}) => {
       }
 
       const accionDesocuparInquilino = (inqui) => {
-
+        var uniqueId = DeviceInfo.getUniqueId();
         const requestOptions = {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json','uuid':uniqueId },
           body: JSON.stringify({idRegistro: inqui.idRegistro})
         };
     
@@ -205,6 +208,13 @@ const Consulta = ({}) => {
             </Dialog.Description>
             <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
               {inquilinoSeleccionado.nombrePersona +" "+inquilinoSeleccionado.apellidoPaterno}
+            </Dialog.Description>
+
+            <Dialog.Description>
+              Fecha de Ingreso
+            </Dialog.Description>
+            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+              {inquilinoSeleccionado.fechaIngreso}
             </Dialog.Description>
 
             <Dialog.Description>

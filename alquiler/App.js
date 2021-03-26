@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
   textoMostrarForm: {
       color: '#FFF',
       fontWeight: 'bold',
-      textAlign: 'center'
+      textAlign: 'center',
+      fontSize: 18
   },
   
 

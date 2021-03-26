@@ -1,18 +1,24 @@
 import React from 'react';
 import { Text, StyleSheet, View, TouchableHighlight, Image } from 'react-native';
 
-const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado, setVisibleDialogEliminar}) => {
+const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado, setVisibleDialogEliminar, setValidacionMonto}) => {
 
 
     const abrirDialogPagar = inquilino => {
         setInquilinoSeleccionado(inquilino);
+        setValidacionMonto(false);
         setVisibleDialogPago(true);
+        
+        
     }
     const abrirDialogEliminar = inquilino => {
         setInquilinoSeleccionado(inquilino);
         setVisibleDialogEliminar(true);
     }
 
+    const colorFecha = {
+        color: item.color
+      }
 
     return (
         <>
@@ -20,20 +26,23 @@ const ItemInquilino = ({item,setVisibleDialogPago,setInquilinoSeleccionado, setV
             <View>
                 <Text style={styles.colHabitacion}>{item.nombreHabitacion}</Text>
             </View>
-            {item.debe? (
-                 <View>
-                 <Text style={styles.colNombreRojo}>{item.nombrePersona}</Text>
-             </View>
-            ):(
-                <View>
+            
+        
+            
+            <View>
                 <Text style={styles.colNombre}>{item.nombrePersona}</Text>
             </View>
-            )}
            
-         
-            <View>
-                <Text style={styles.colFecha}>{item.fechaFinMensualidad}</Text>
-            </View>
+           
+          
+            
+                <View>
+                    <Text style= {[styles.colFecha, colorFecha]}>{item.fechaFinMensualidad}</Text>
+                </View>
+
+           
+
+
             <View>
                 <TouchableHighlight  onPress={ () => abrirDialogPagar(item) } style={styles.colBtnDesocupar}>
                     <Image style={styles.imagestyle} 
@@ -102,6 +111,13 @@ const styles = StyleSheet.create({
         width:100,
         fontSize: 17,
         marginLeft:5
+    },
+    colFechaRojo: {
+        fontWeight: 'bold',
+        width:95,
+        fontSize: 17,
+        marginLeft:5,
+        color:'red'
     },
     colFecha: {
         fontWeight: 'bold',

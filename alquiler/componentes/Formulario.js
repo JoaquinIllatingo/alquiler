@@ -57,14 +57,9 @@ const Formulario = ({guardarMostrarForm}) => {
               montoAlquiler: montoAlquiler              
             }
 
-            console.log("inquilinoFormulario");
-            console.log(inquilinoFormulario);
             guardarInquilinoAPI(inquilinoFormulario);
 
-
-
           }else{
-            console.log("mostrar Alerta")
             mostrarAlerta(valid);
           }
 
@@ -261,13 +256,15 @@ const Formulario = ({guardarMostrarForm}) => {
                 onValueChange={propiedad => obtenerPropiedad(propiedad)}
                 itemStyle ={{height:120}}
                 >
+
                 <Picker.Item label="--Seleccione--" value= ""/>
                 <Picker.Item label="RETAMAS" value= "1"/>
                 <Picker.Item label="CEDROS" value= "2"/>
                 <Picker.Item label="SANTA ANITA" value= "3"/>
-                <Picker.Item label="PP LECAROS" value= "4"/>
-                <Picker.Item label="PP JIROM" value= "5"/>
-                <Picker.Item label="PP STA PAULA" value= "6"/>
+                <Picker.Item label="PTE PIEDRA LECAROS" value= "4"/>
+                <Picker.Item label="PTE PIEDRA JIRON" value= "5"/>
+                <Picker.Item label="PTE PIEDRA STA PAULA" value= "6"/>
+
             </Picker>
             </View>
 

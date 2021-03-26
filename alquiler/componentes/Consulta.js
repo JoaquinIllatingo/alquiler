@@ -15,12 +15,14 @@ const Consulta = ({}) => {
 
     const [inquilinoSeleccionado, setInquilinoSeleccionado] = useState({});
 
-    const [montoPagar, guardarMontoPagar] = useState();
+    const [montoPagar, guardarMontoPagar] = useState(0);
     const [visibleDialogPago, setVisibleDialogPago] = useState(false);
     const [visibleDialogEliminar, setVisibleDialogEliminar] = useState(false);
   
     const [visibleDialogConfirmacion_Error, setVisibleDialogConfirmacion_Error] = useState(false);
     const [textoDialogConfirmacion_Error, setTextoDialogConfirmacion_Error] = useState("");
+
+    const [validacionMonto, setValidacionMonto] = useState(false);
 
 
     const obtenerHabitaciones = (propiedad) => {
@@ -124,9 +126,29 @@ const Consulta = ({}) => {
       }
 
       const accionPagarDialogPago = () =>{
-        accionPagoInquilino(inquilinoSeleccionado);
-        setVisibleDialogPago(false);
+        if(validarCamposPago()){
+          accionPagoInquilino(inquilinoSeleccionado);
+          setVisibleDialogPago(false);
+          guardarMontoPagar(0);
+        }else{
+          setValidacionMonto(true);
+        }
         
+      }
+
+      const validarCamposPago = () =>{
+
+        if(montoPagar === 0){
+          return false;
+        }else{
+          return true;
+        }
+
+      }
+
+      const digitandoMonto = (texto) =>{
+        setValidacionMonto(false);
+        guardarMontoPagar(texto);
       }
     
       const accionCancelarDialogPago = () =>{
@@ -154,7 +176,7 @@ const Consulta = ({}) => {
         <View style={styles.filtro}>
                 <Text style={styles.label}>Propiedad:</Text>
                 <Picker 
-                style = {{width:180}}
+                style = {{width:250}}
                 selectedValue= {propiedad}
                 onValueChange={propiedad => obtenerHabitaciones(propiedad)}
                 itemStyle ={{height:120}}
@@ -162,9 +184,9 @@ const Consulta = ({}) => {
                 <Picker.Item label="RETAMAS" value= "1"/>
                 <Picker.Item label="CEDROS" value= "2"/>
                 <Picker.Item label="SANTA ANITA" value= "3"/>
-                <Picker.Item label="PP LECAROS" value= "4"/>
-                <Picker.Item label="PP JIROM" value= "5"/>
-                <Picker.Item label="PP STA PAULA" value= "6"/>
+                <Picker.Item label="PTE PIEDRA LECAROS" value= "4"/>
+                <Picker.Item label="PTE PIEDRA JIRON" value= "5"/>
+                <Picker.Item label="PTE PIEDRA STA PAULA" value= "6"/>
             </Picker>
         </View>
 
@@ -194,42 +216,62 @@ const Consulta = ({}) => {
               setVisibleDialogPago= {setVisibleDialogPago}
               setInquilinoSeleccionado = {setInquilinoSeleccionado}
               setVisibleDialogEliminar = {setVisibleDialogEliminar}
+              setValidacionMonto = {setValidacionMonto}
               />}
               
-              keyExtractor={ inquilinos => inquilinos.idInquilino}
+              keyExtractor={ inquilino => inquilino.idInquilino}
             />
 
 
         <View style={styles.container}>
           <Dialog.Container visible={visibleDialogPago}>
             <Dialog.Title style={styles.tituloDialog}>Realizar Pago</Dialog.Title>
-            <Dialog.Description>
-              Inquilino
-            </Dialog.Description>
-            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
-              {inquilinoSeleccionado.nombrePersona +" "+inquilinoSeleccionado.apellidoPaterno}
-            </Dialog.Description>
 
-            <Dialog.Description>
-              Fecha de Ingreso
-            </Dialog.Description>
-            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
-              {inquilinoSeleccionado.fechaIngreso}
-            </Dialog.Description>
+            <View >
 
-            <Dialog.Description>
-              Monto de Alquiler
-            </Dialog.Description>
-            <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
-              {inquilinoSeleccionado.montoAlquiler}
-            </Dialog.Description>        
+              <Dialog.Description>
+                Inquilino
+              </Dialog.Description>
+              <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+                {inquilinoSeleccionado.nombrePersona +" "+inquilinoSeleccionado.apellidoPaterno}
+              </Dialog.Description>
+
+              <Dialog.Description>
+                Fecha de Ingreso
+              </Dialog.Description>
+              <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+                {inquilinoSeleccionado.fechaIngreso}
+              </Dialog.Description>
+
+              <Dialog.Description>
+                Monto de Alquiler
+              </Dialog.Description>
+              <Dialog.Description style={{paddingBottom:15, fontWeight:'bold'}}>
+                {inquilinoSeleccionado.montoAlquiler}
+              </Dialog.Description>   
+
             
-            <Dialog.Description>
-              Monto a Pagar
+                <Dialog.Description>
+                  Monto a Pagar
+                </Dialog.Description>
+                <Dialog.Input style={styles.inputMontoPago} keyboardType= 'numeric'
+                onChangeText= {(texto) => digitandoMonto(texto)} >
+                </Dialog.Input>
+            </View>
+            
+            <View>
+            { validacionMonto?(
+              <Dialog.Description style={{color:"red"}}>
+              Ingrese Monto a Pagar
             </Dialog.Description>
-            <Dialog.Input style={styles.inputMontoPago} keyboardType= 'numeric'
-            onChangeText= {(texto) => guardarMontoPagar(texto)} >
-            </Dialog.Input>
+            ):(
+              <Dialog.Description>
+
+              </Dialog.Description>
+            )}
+
+            </View>
+            
 
             <Dialog.Button label="ATRAS" onPress={accionCancelarDialogPago} />
             <Dialog.Button label="PAGAR" onPress={accionPagarDialogPago } />
@@ -338,7 +380,8 @@ const styles = StyleSheet.create({
     },
 
     inputMontoPago:{
-        backgroundColor:"#74D9D9"
+        backgroundColor:"#74D9D9",
+        paddingLeft:-10
     },
     tituloDialog:{
         fontWeight: 'bold',
